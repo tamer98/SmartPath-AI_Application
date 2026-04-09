@@ -1,0 +1,74 @@
+services: 
+  mongodb:
+    image: mongo:6.0
+    container_name: db
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_ROOT} 
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB_NAME} 
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+     - back_end
+      
+   
+  path-finder:
+    image: path-finder-ai:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: application
+    restart: unless-stopped
+    ports:
+      - "3000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      DATABASE_URI: ${DATABASE_URI}
+      RABBITMQ_URI: ${RABBITMQ_URI}
+      LOG_LEVEL: ${LOG_LEVEL}
+      PERSISTENCE: ${PERSISTENCE}
+      GEO_API: ${GEO_API}
+      OPENAI_API: ${OPENAI_API}
+    networks:
+     - back_end
+     - front_end
+
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+    - "80:80"
+    volumes:
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    - ./nginx/logs.txt:/var/log/nginx/access.log
+    - ./nginx/errors.txt:/var/log/nginx/error.log
+    depends_on:
+      - path-finder
+    networks:
+     - front_end
+
+
+networks:
+  front_end:
+    driver: bridge
+    name: front_end  
+  back_end:
+    driver: bridge
+    name: back_end  
+
+volumes:
+  mongodb_data:
+    driver: local
+    name: mongodb_data

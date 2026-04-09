@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tripi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" href="public/style.css">
+</head>
+
+<body>
+
+  <!-- top -->
+  <section id="top" class="gradient-background-title">
+
+    <div class="container col-xxl-8 px-4 pt-5">
+      <div class="row flex-lg-row-reverse align-items-center g-5 pt-5">
+        <div class="col-10 col-sm-8 col-lg-5">
+          <img src="public/images/7.jpg" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" height="50"
+            loading="lazy">
+        </div>
+        <div class="col-lg-6">
+          <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Explore New Routes To Make Your Trip The Best</h1>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- middle -->
+  <section id="middle">
+    <div class="my-5">
+    <div class="p-5 text-center bg-body-tertiary">
+        <div class="container py-5">
+            <form action="/submit" method="POST">
+                <div class="form-group">
+                    <label for="userInput" class="text-body-emphasis h2">Travel To</label>
+                    <input type="text" class="form-control" id="userInput" name="userInput" placeholder="Country Name , walking/driving/Cycling" required>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Let's Go</button>
+            </form>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-sm-12">
+                    <img src="public/images/Hertz-Logo-300x188.png" alt="techcrunch" height="70">
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                    <img src="public/images/TripAdvisor_Logo.svg.png" alt="bizinsider" height="60">
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                    <img src="public/images/2560px-Hotels.com_logo.svg.png" alt="tnw" height="50">
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  </section>
+
+
+  <!-- fotter -->
+  <section id="fotter" class="gradient-background-footer">
+    <div class="container px-4 py-5" id="hanging-icons">
+        <h2 class="pb-2 text-center">Three Possible Routes For Trip</h2>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+          <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+              <svg  width="40px" height="45px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="-70 0 540 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="512" height="512">
+                <g id="_01_align_center">
+                  <path d="M255.104,512.171l-14.871-12.747C219.732,482.258,40.725,327.661,40.725,214.577c0-118.398,95.981-214.379,214.379-214.379   s214.379,95.981,214.379,214.379c0,113.085-179.007,267.682-199.423,284.932L255.104,512.171z M255.104,46.553   c-92.753,0.105-167.918,75.27-168.023,168.023c0,71.042,110.132,184.53,168.023,236.473   c57.892-51.964,168.023-165.517,168.023-236.473C423.022,121.823,347.858,46.659,255.104,46.553z"/>
+                  <path d="M255.104,299.555c-46.932,0-84.978-38.046-84.978-84.978s38.046-84.978,84.978-84.978s84.978,38.046,84.978,84.978   S302.037,299.555,255.104,299.555z M255.104,172.087c-23.466,0-42.489,19.023-42.489,42.489s19.023,42.489,42.489,42.489   s42.489-19.023,42.489-42.489S278.571,172.087,255.104,172.087z"/>
+                </g>
+                </svg>
+            </div>
+            <div>
+              <h2>Route 1</h2>
+              <p>Press click to explore more</p>
+              <a href="/option1"  class="btn btn-primary">
+                Click
+              </a>
+            </div>
+          </div>
+          <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+              <svg width="40px" height="45px" xmlns="http://www.w3.org/2000/svg" id="Isolation_Mode" data-name="Isolation Mode" viewBox="-2 0 24 24" width="512" height="512"><path d="M12,.021A10.077,10.077,0,0,0,1.935,10.087c0,5.274,8.166,12.329,9.1,13.117l.967.817.967-.817c.932-.788,9.1-7.843,9.1-13.117A10.077,10.077,0,0,0,12,.021Zm0,20.043c-3.065-2.792-7.067-7.328-7.067-9.977a7.067,7.067,0,1,1,14.134,0C19.067,12.731,15.064,17.269,12,20.064Z"/><circle cx="12" cy="10.002" r="2.997"/></svg>
+            </div>
+            <div>
+              <h2>Route 2</h2>
+              <p>Press click to explore more</p>
+              <a href="/option2" class="btn btn-primary">
+                Click
+              </a>
+            </div>
+          </div>
+          <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+              <svg width="40px" height="45px" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="-2 0 24 24" width="512" height="512"><path d="M12,0A10.011,10.011,0,0,0,2,10c0,5.282,8.4,12.533,9.354,13.343l.646.546.646-.546C13.6,22.533,22,15.282,22,10A10.011,10.011,0,0,0,12,0Zm0,15a5,5,0,1,1,5-5A5.006,5.006,0,0,1,12,15Z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <h2>Route 3</h2>
+              <p>Press click to explore more</p>
+              <a href="/option3" class="btn btn-primary">
+                Click
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+</body>
+</html>
