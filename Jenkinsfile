@@ -42,19 +42,21 @@ pipeline {
 
         stage("Test Application"){
             steps {
-                sh '''
-                    echo "Starting app..."
-                    node index.js & 
-                    echo $! > app.pid
-                    sleep 5
+                dir('app') {
+                    sh '''
+                        echo "Starting app..."
+                        node index.js & 
+                        echo $! > app.pid
+                        sleep 5
 
-                    echo "Running unit test (HTTP check)"
-                    curl -f http://localhost:3000
-                    sleep 5
+                        echo "Running unit test (HTTP check)"
+                        curl -f http://localhost:3000
+                        sleep 5
 
-                    echo "Stopping app..."
-                    kill $(cat app.pid) || true
-                '''
+                        echo "Stopping app..."
+                        kill $(cat app.pid) || true
+                    '''
+                }
             }
         }
 
