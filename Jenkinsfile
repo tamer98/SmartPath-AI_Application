@@ -65,6 +65,7 @@ pipeline {
                     pkill -f "next dev" || true
                 '''
             }
+        }
 
         // ========================
         // 4. DOCKER BUILD
@@ -150,16 +151,23 @@ pipeline {
         // }
 
 
-    post {
-        failure {
-            emailext recipientProviders: [culprits()],
-                     subject: 'Build failure', body: 'OMG, you broke the build!',
-                     attachLog: true, compressLog: true,
-        }
-        emailext body: '', subject: '', to: 'tamer.taji@gmail.com'
+        post {
+            failure {
+                emailext(
+                    recipientProviders: [culprits()],
+                    subject: "Build Failed #${env.BUILD_NUMBER}",
+                    body: "Build failed.\nCheck details: ${env.BUILD_URL}",
+                    attachLog: true
+                )
+            }
 
-        // always {
-        //     // Cleanup actions go here
-        // }
+            success {
+                emailext(
+                    to: 'tamer.taji@gmail.com',
+                    subject: "Build Success #${env.BUILD_NUMBER}",
+                    body: "Build succeeded!\n${env.BUILD_URL}"
+                )
+            }
+        }
     }
 }
