@@ -5,7 +5,6 @@ pipeline {
         pollSCM("* * * * *")
     }
 
-
     options {
         timeout(time: 5, unit: "MINUTES")
         timestamps()
@@ -19,31 +18,17 @@ pipeline {
         AWS_REGION = "ap-south-1"
         ECR_REPO = "development/path-finder"
         IMAGE_TAG = "${env.GIT_COMMIT}"
-        // AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-        // AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
     }
 
 
     stages {
-        // stage("Cleanup Workspace"){
-        //     steps {
-        //         cleanWs()
-        //     }
-
-        // }
-        // ========================
-        // 1. CHECKOUT
-        // ========================
-
         stage("checkout") {
             steps {
                 git branch: 'main', url: 'https://github.com/tamer98/SmartPath-AI_Application'
             }
         }
 
-        // ========================
-        // 2. BUILD + UNIT TEST
-        // ========================
+
         stage('Build Application') {
             steps {
                 dir('app') {
@@ -53,6 +38,7 @@ pipeline {
                 }
             }
         }
+
 
         stage("Test Application"){
             steps {
@@ -72,9 +58,7 @@ pipeline {
             }
         }
 
-        // ========================
-        // 4. DOCKER BUILD
-        // ========================
+
         stage('Build Docker Image') {
             steps {
                 sh '''
@@ -84,9 +68,6 @@ pipeline {
         }
 
 
-        // ========================
-        // 5. E2E TEST (DOCKER COMPOSE)
-        // ========================
         stage('E2E Test') {
             steps {
                 sh '''
@@ -107,9 +88,6 @@ pipeline {
         }
 
 
-        // ========================
-        // 6. LOGIN TO ECR (IAM ROLE)
-        // ========================
         stage('Login to ECR') {
             steps {
                 withCredentials([[
@@ -127,9 +105,7 @@ pipeline {
             }
         }
 
-        // ========================
-        // 7. PUSH IMAGE
-        // ========================
+
         stage('Push to ECR') {
             steps {
                 sh '''
@@ -137,42 +113,12 @@ pipeline {
                     docker push $ECR_REPO:$IMAGE_TAG
                 '''
             }
-        }
-
-
-
-        //     stage("Publish") {
-        //         steps {
-        //             // Publish steps go here
-        //         }
-        //     }
-
-
-        //     stage("Deploy") {
-        //         steps {
-        //             // Deployment steps go here
-        //         }
-        //     }
-        // }
-
-
-        
+        }   
     }
 
     post {
-            always {
-                cleanWs()
-            }
-            // failure {
-            //     emailext(
-            //         recipientProviders: [culprits()],
-            //         subject: "Build Failed #${env.BUILD_NUMBER}",
-            //         body: "Build failed.\nCheck details: ${env.BUILD_URL}",
-            //         attachLog: true
-            //     )
-            // }
-
-            // success {
-            //     emailext(
-            //         to: 'tamer.taji@gmail.com',
-            //         subject: "B
+        always {
+            cleanWs()
+        }
+    }
+}
