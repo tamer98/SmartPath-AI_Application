@@ -25,12 +25,12 @@ pipeline {
 
 
     stages {
-        stage("Cleanup Workspace"){
-            steps {
-                cleanWs()
-            }
+        // stage("Cleanup Workspace"){
+        //     steps {
+        //         cleanWs()
+        //     }
 
-        }
+        // }
         // ========================
         // 1. CHECKOUT
         // ========================
@@ -49,7 +49,6 @@ pipeline {
                 dir('app') {
                     sh '''
                         npm install
-                        npm run build
                         npm run dev &
 
                         sleep 5
@@ -157,21 +156,24 @@ pipeline {
     }
 
     post {
-            failure {
-                emailext(
-                    recipientProviders: [culprits()],
-                    subject: "Build Failed #${env.BUILD_NUMBER}",
-                    body: "Build failed.\nCheck details: ${env.BUILD_URL}",
-                    attachLog: true
-                )
+            always {
+                cleanWs()
             }
+            // failure {
+            //     emailext(
+            //         recipientProviders: [culprits()],
+            //         subject: "Build Failed #${env.BUILD_NUMBER}",
+            //         body: "Build failed.\nCheck details: ${env.BUILD_URL}",
+            //         attachLog: true
+            //     )
+            // }
 
-            success {
-                emailext(
-                    to: 'tamer.taji@gmail.com',
-                    subject: "Build Success #${env.BUILD_NUMBER}",
-                    body: "Build succeeded!\n${env.BUILD_URL}"
-                )
-            }
+            // success {
+            //     emailext(
+            //         to: 'tamer.taji@gmail.com',
+            //         subject: "Build Success #${env.BUILD_NUMBER}",
+            //         body: "Build succeeded!\n${env.BUILD_URL}"
+            //     )
+            // }
     }
 }
