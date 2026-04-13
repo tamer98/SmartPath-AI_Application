@@ -46,13 +46,15 @@ pipeline {
         // ========================
         stage('Build Application') {
             steps {
-                sh '''
-                    npm install
-                    npm run build
-                    npm run dev &
+                dir('app') {
+                    sh '''
+                        npm install
+                        npm run build
+                        npm run dev &
 
-                    sleep 5
-                '''
+                        sleep 5
+                    '''
+                }
             }
         }
 
