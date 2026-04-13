@@ -49,9 +49,6 @@ pipeline {
                 dir('app') {
                     sh '''
                         npm install
-                        npm run dev &
-
-                        sleep 5
                     '''
                 }
             }
@@ -60,10 +57,17 @@ pipeline {
         stage("Test Application"){
             steps {
                 sh '''
+                    echo "Starting app..."
+                    node index.js & 
+                    echo $! > app.pid
+                    sleep 5
+
                     echo "Running unit test (HTTP check)"
                     curl -f http://localhost:3000
+                    sleep 5
 
-                    pkill -f "next dev" || true
+                    echo "Stopping app..."
+                    kill $(cat app.pid) || true
                 '''
             }
         }
@@ -171,9 +175,4 @@ pipeline {
             // success {
             //     emailext(
             //         to: 'tamer.taji@gmail.com',
-            //         subject: "Build Success #${env.BUILD_NUMBER}",
-            //         body: "Build succeeded!\n${env.BUILD_URL}"
-            //     )
-            // }
-    }
-}
+            //         subject: "B
