@@ -151,7 +151,10 @@ pipeline {
         // }
 
 
-        post {
+        
+    }
+
+    post {
             failure {
                 emailext(
                     recipientProviders: [culprits()],
@@ -168,6 +171,5 @@ pipeline {
                     body: "Build succeeded!\n${env.BUILD_URL}"
                 )
             }
-        }
     }
 }
