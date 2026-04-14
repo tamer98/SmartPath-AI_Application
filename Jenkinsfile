@@ -86,7 +86,11 @@ pipeline {
                     echo "Check file type:"
                     file nginx/nginx.conf || true
 
-                    cd $WORKSPACE
+                    cd /var/jenkins_home/workspace
+                    
+                    echo "PWD:"
+                    pwd
+
                     docker compose up -d
 
                     docker ps -a
