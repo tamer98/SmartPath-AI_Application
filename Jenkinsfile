@@ -76,6 +76,16 @@ pipeline {
         stage('E2E Test') {
             steps {
                 sh '''
+
+                    echo "PWD:"
+                    pwd
+
+                    echo "Check nginx folder:"
+                    ls -la nginx
+
+                    echo "Check file type:"
+                    file nginx/nginx.conf || true
+
                     docker compose up -d
 
                     docker ps -a
@@ -122,8 +132,8 @@ pipeline {
     }
 
     post {
-        always {
-            cleanWs()
-        }
+        // always {
+        //     cleanWs()
+        // }
     }
 }
