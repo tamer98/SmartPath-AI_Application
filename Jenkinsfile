@@ -86,6 +86,7 @@ pipeline {
                     echo "Check file type:"
                     file nginx/nginx.conf || true
 
+                    cd $WORKSPACE
                     docker compose up -d
 
                     docker ps -a
