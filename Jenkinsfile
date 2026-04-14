@@ -18,6 +18,9 @@ pipeline {
         AWS_REGION = "ap-south-1"
         ECR_REPO = "development/path-finder"
         IMAGE_TAG = "${env.GIT_COMMIT}"
+        OPENAI_API = credentials('openai_cred')
+        GEO_API = credentials('geo_cred')
+        DATABASE_URI = ""
     }
 
 
