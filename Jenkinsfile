@@ -86,8 +86,8 @@ pipeline {
                     echo "Check file type:"
                     file nginx/nginx.conf || true
 
-                    cd /var/jenkins_home/workspace
-                    
+                    cd /var/jenkins_home/workspace/
+
                     echo "PWD:"
                     pwd
 
