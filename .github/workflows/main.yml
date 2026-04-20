@@ -1,0 +1,143 @@
+name: Path_Finder-EKS CI/CD
+
+on:
+  push:
+    branches: 
+      - main
+    paths-ignore:
+      - 'README.md'
+      - '.github/**'
+
+  workflow_dispatch:
+     
+
+env:
+  AWS_REGION: ap-south-1
+  ECR_REPOSITORY: development/path-finder       
+  # OPENAI_API = credentials('openai_cred')
+  # GEO_API = credentials('geo_cred')
+  # DATABASE_URI = credentials('database_uri')
+                                               
+jobs:
+  Build_And_Push:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
+    
+    steps:
+    - name: Check out code and pull
+      uses: actions/checkout@v4
+
+    - name: install dependencies and Build the application
+      working-directory: ./app
+      run: |
+         echo "starting http server"
+         npx http-server -p 8080 &
+
+    - name: wait for server to be upload
+      run: sleep 5
+
+
+    - name: Run tests
+      run: |
+         echo "testing app"
+         curl http://localhost:8080
+
+    - name: Stop application
+      run: kill -9 $(lsof -t -i :8080)
+
+
+    - name: Build Docker image
+      run: |
+         echo "building app image"
+         docker build -t my-app:latest .
+
+
+    - name: Deploy testing environment
+      run: |
+          echo "testing enviroment up"
+          docker run -d --name app-con -p 80:80 my-app  
+      
+    - name: Check running containers and existed images
+      run: |
+         docker ps -a
+         docker images
+        
+    - name: wait application to be upload
+      run: |
+         sleep 5
+          
+    - name: Run tests
+      run: |
+         echo "app container testing"
+         curl http://localhost:80
+
+    - name: Remove testing environment
+      if: always()
+      run: |
+         echo "testing enviroment down"
+         docker stop app-con 2>/dev/null || true
+         docker rm app-con 2>/dev/null || true
+
+        
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+         aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: tag, and push image to Amazon ECR
+      id: build-image #need to check it
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: | 
+         docker tag my-app:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+         echo "image=$IMAGE_TAG" >> $GITHUB_OUTPUT
+        
+
+  Deploy_To_ECS:
+    needs: Build_And_Push
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+       
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+         aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+
+    - name: Pulling image from ECR
+      id: pull-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+         echo "Pulling latest image from ECR"
+         IMAGE_TAG=${{ needs.Build_And_Push.outputs.image }}
+         docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+         echo "image_latest=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
