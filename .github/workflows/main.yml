@@ -84,7 +84,7 @@ jobs:
     - name: Run tests
       run: |
          echo "app container testing"
-         curl http://localhost:3000
+         curl http://localhost:80
 
     - name: Remove testing environment
       if: always()
