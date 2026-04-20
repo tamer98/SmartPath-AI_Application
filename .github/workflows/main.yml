@@ -14,9 +14,9 @@ on:
 env:
   AWS_REGION: ap-south-1
   ECR_REPOSITORY: development/path-finder       
-  # OPENAI_API = credentials('openai_cred')
-  # GEO_API = credentials('geo_cred')
-  # DATABASE_URI = credentials('database_uri')
+  OPENAI_API : ${{ secrets.OPENAI_API }}
+  GEO_API : ${{ secrets.GEO_API }}
+  DATABASE_URI : ${{ secrets.DATABASE_URI }}
                                                
 jobs:
   Build_And_Push:
