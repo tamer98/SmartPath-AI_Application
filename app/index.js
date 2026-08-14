@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import bodyParser from "body-parser";
 import opencage from 'opencage-api-client';
 import DataPrompt from "./db.js";
+import client from "prom-client";
 
 console.log("File started running");
 
@@ -14,6 +15,18 @@ console.log("File started running");
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = 3000;
+
+client.collectDefaultMetrics();
+
+app.get("/metrics", async (req, res) => {
+  try {
+    res.set("Content-Type", client.register.contentType);
+    res.end(await client.register.metrics());
+  } catch (error) {
+    res.status(500).end(error);
+  }
+});
+
 var uResponse = "";
 dotenv.config();
 
@@ -26,7 +39,7 @@ app.use(express.json());
 
 // api key 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API  // api key 
+  apiKey: process.env.OPENAI_API  
 });
 
  

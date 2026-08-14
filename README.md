@@ -89,59 +89,87 @@ SmartPath-AI_Application:
 
 ## Repository Structure
 
-Infrastructure Repository
+```
+├── Application
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── app
+│   │   ├── db.js
+│   │   ├── index.html
+│   │   ├── index.js
+│   │   ├── node_modules
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── public
+│   │   └── views
+│   ├── docker-compose.yaml
+│   ├── mongo-init.js
+│   └── nginx
+│       ├── errors.txt
+│       ├── logs.txt
+│       └── nginx.conf
+├── GitOps
+│   ├── app-servicemonitor.yaml
+│   ├── apps
+│   │   ├── app-of-apps.yaml
+│   │   ├── application.yaml
+│   │   ├── database.yaml
+│   │   └── infra.yaml
+│   ├── database
+│   │   ├── dbvalues.yaml
+│   │   └── mongodb
+│   ├── infra
+│   │   ├── ingress-nginx
+│   │   ├── ingress.yaml
+│   │   ├── sc-ebs-csi-gp3.yaml
+│   │   └── secretstore.yaml
+│   ├── mongodb-values.yaml
+│   ├── monitoring
+│   ├── nginx-controller-values.yaml
+│   ├── path-finder-ai
+│   │   ├── Chart.yaml
+│   │   ├── charts
+│   │   ├── templates
+│   │   └── values.yaml
+│   └── prometheus-stack-values.yaml
+├── Infrastructure
+│   ├── README.md
+│   ├── iam-policy.json
+│   ├── iam_policy.tf
+│   ├── main.tf
+│   ├── modules
+│   │   ├── ebs-csi-storageclass
+│   │   └── network
+│   ├── providers.tf
+│   ├── terraform.tfvars
+│   └── variables.tf
+```
 
-```
-SmartPath-AI_Infra/
-├── main.tf
-├── providers.tf
-├── variables.tf
-├── terraform.tfvars
-├── iam-policy.json
-├── iam_policy.tf
-└── modules/
-    ├── network/
-    │   ├── main.tf
-    │   ├── outputs.tf
-    │   └── variables.tf
-    └── ebs-csi-storageclass/
-        ├── main.tf
-        ├── outputs.tf
-        ├── provider.tf
-        └── variables.tf
-```
+## Getting Started
 
-GitOps Repository
+### 📊Observability
 
-```
-SmartPath-AI_GitOps/
-├── apps/
-│   ├── app-of-apps.yaml
-│   ├── infra.yaml
-│   ├── database.yaml
-│   └── application.yaml
-│
-├── infra/
-│   ├── ingress-nginx/
-│   ├── ingress.yaml
-│   ├── secretstore.yaml
-│   └── sc-ebs-csi-gp3.yaml
-│
-├── database/
-│   └── mongodb/
-│
-├── path-finder-ai/
-│   ├── templates/
-│   │   ├── deployment.yaml
-│   │   ├── service.yaml
-│   │   ├── config.yaml
-│   │   └── external-secrets.yaml
-│   └── values.yaml
-│
-├── monitoring/
-├── app-servicemonitor.yaml
-└── prometheus-stack-values.yaml
-```
+**Monitoring**
+
+- Prometheus: Metrics collection from application and infrastructure
+- Grafana: Custom dashboards for application performance and node monitoring
+- Endpoints: /metrics for application monitoring
+
+**Dashboards**
+
+- Node monitoring and resource utilization
+- Application-specific metrics and performance
+
+<img width="1536" height="880" alt="Screenshot 2026-08-12 at 20 59 55" src="https://github.com/user-attachments/assets/a76a5e4b-4ef2-4817-881a-2a918ce92c47" />
+
+<img width="1531" height="387" alt="Screenshot 2026-08-12 at 20 34 18" src="https://github.com/user-attachments/assets/18a6e9df-1e2c-4d8c-bddf-2ac1adad5120" />
+
+<br>
+<br>
+
+<img width="1536" height="744" alt="Screenshot 2026-08-12 at 20 56 22" src="https://github.com/user-attachments/assets/f6be9265-e8af-4ac5-a3cf-3eb813e8c87e" />
+
+<img width="1536" height="744" alt="Screenshot 2026-08-12 at 20 56 36" src="https://github.com/user-attachments/assets/55098e3d-8135-4258-b8cc-8859c5ae3b32" />
 
 ## Acknowledgments
 
