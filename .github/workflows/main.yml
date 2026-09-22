@@ -23,10 +23,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 2
-
-    
-    outputs:
-      image: ${{ steps.build-image.outputs.image }}
     
     steps:
     - name: Check out code and pull
@@ -112,39 +108,38 @@ jobs:
       run: | 
          docker tag my-app:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-         echo "image=$IMAGE_TAG" >> $GITHUB_OUTPUT
+    
         
 
-  Deploy_To_ECS:
-    needs: Build_And_Push
-    name: Deploy
-    runs-on: ubuntu-latest
-    env:
-       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-       
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-         aws-region: ${{ env.AWS_REGION }}
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-
-
-    - name: Pulling image from ECR
-      id: pull-image
+    - name: Update GitOps repository
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
       run: |
-         echo "Pulling latest image from ECR"
-         IMAGE_TAG=${{ needs.Build_And_Push.outputs.image }}
-         docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-         echo "image_latest=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "Cloning GitOps repository..."
+          git clone \
+            https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/tamer98/SmartPath-AI_GitOps.git \
+            gitops
+            
+          echo "Moving to Helm chart..."
+          cd gitops/path-finder-ai
+
+          echo "Current values.yaml:"
+          cat values.yaml
+
+          echo "Updating image tag..."
+          sed -i "s/^  tag:.*/  tag: ${IMAGE_TAG}/" values.yaml
+
+          echo "Updated values.yaml:"
+          cat values.yaml
+
+          echo "Configuring Git..."
+          git config user.name "SmartPath AI CI/CD"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          echo "Committing GitOps change..."
+          git add values.yaml
+          git commit \
+            -m "Update path-finder-ai image to ${IMAGE_TAG}"
+
+          echo "Pushing GitOps change..."
+          git push
